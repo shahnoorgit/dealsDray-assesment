@@ -33,7 +33,7 @@ const useSignup = () => {
 
       localStorage.setItem("localUser", JSON.stringify(data));
       toast.success("logined success");
-      setAuth(JSON.stringify(data));
+      setAuth(data);
       nav("/");
       setloading(false);
     } catch (error) {
