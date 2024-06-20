@@ -40,7 +40,7 @@ const TableComponent = ({ data, handleEdit, loading, handleDelete }) => {
                 <td className="py-2 px-4 border-b">{item.mobileNumber}</td>
                 <td className="py-2 px-4 border-b">{item.name}</td>
                 <td className="py-2 px-4 border-b">{item.gender}</td>
-                <td className="py-2 px-4 border-b">{item.course}</td>
+                <td className="py-2 px-4 border-b">{item.course.join(",")}</td>
                 <td className="py-2 px-4 border-b">
                   {item.designation.toUpperCase()}
                 </td>
