@@ -19,7 +19,6 @@ const employeeSchema = new Schema({
   mobileNumber: {
     type: String,
     required: true,
-    unique: true,
   },
 
   designation: {
@@ -34,10 +33,12 @@ const employeeSchema = new Schema({
     enum: ["male", "female"],
   },
 
-  course: {
-    type: String,
-    required: true,
-  },
+  course: [
+    {
+      type: String,
+      required: true,
+    },
+  ],
 
   image: {
     type: String,

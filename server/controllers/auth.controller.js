@@ -17,11 +17,11 @@ export const signupuser = async (req, res) => {
     }
     const { fullname, username, password, confirmPassword } = value;
     if (password != confirmPassword) {
-      return res.status(200).json("password dont match ");
+      return res.status(200).json({ error: "password do not match" });
     }
     const user = await User.findOne({ username });
     if (user) {
-      return res.status(200).json({ userInvalid: "username already exits" });
+      return res.status(200).json({ error: "username already exits" });
     }
     const salt = await bcrypt.genSalt(5);
     const hashedPassword = await bcrypt.hash(password, salt);

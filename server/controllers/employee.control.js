@@ -12,7 +12,7 @@ const employeeSchema = Joi.object({
   mobileNumber: Joi.string()
     .pattern(/^[0-9]{10}$/)
     .required(),
-  course: Joi.string().min(2).max(100).required(),
+  course: Joi.array().items(Joi.string().min(2).max(100)).required(),
   employeer: Joi.string().required(),
   designation: Joi.string().min(2).max(100).required(),
 });
@@ -37,7 +37,20 @@ export const createEmployee = async (req, res) => {
 
   try {
     const user = await User.findOne({ _id: employeer });
+    const existingEmployee = await Employee.findOne({ email: email });
+    const existingEmployeeNo = await Employee.findOne({
+      mobileNumber: mobileNumber,
+    });
 
+    if (existingEmployeeNo) {
+      return res
+        .status(400)
+        .json({ error: "Employee mobile number already exists" });
+    }
+
+    if (existingEmployee) {
+      return res.status(400).json({ error: "Employee email already exists" });
+    }
     if (!user) {
       return res.status(401).json({ error: "user not found" });
     }
@@ -48,7 +61,7 @@ export const createEmployee = async (req, res) => {
       gender: gender.toLowerCase(),
       image,
       mobileNumber,
-      course,
+      course: course,
       designation: designation.toLowerCase(),
       createdAt: Date.now(),
     });
@@ -74,7 +87,7 @@ const updateEmployeeSchema = Joi.object({
   gender: Joi.string().valid("male", "female", "other"),
   image: Joi.string().uri(),
   mobileNumber: Joi.string().pattern(/^[0-9]{10}$/),
-  course: Joi.string().min(2).max(100),
+  course: Joi.array().items(Joi.string().min(2).max(100)).required(),
   designation: Joi.string().min(2).max(100),
 }).min(1); // At least one field is required
 
@@ -91,6 +104,7 @@ export const updateEmployee = async (req, res) => {
 
   try {
     // Assuming updateEmployeeService is the service function to update an employee
+
     const updatedEmployee = await Employee.findByIdAndUpdate(
       id,
       {
@@ -116,7 +130,9 @@ export const updateEmployee = async (req, res) => {
     res.status(200).json(updatedEmployee);
   } catch (err) {
     console.error("Error updating employee:", err);
-    res.status(500).json({ error: "Internal Server Error" });
+    res
+      .status(400)
+      .json({ error: "You May Have entered existing number or email" });
   }
 };
 
@@ -131,10 +147,10 @@ export const deleteEmployee = async (req, res) => {
     }
     const employeeToDelete = await Employee.findByIdAndDelete(employee_id);
     if (!employeeToDelete) {
-      res.status(404).json({ error: "Employee not found" });
+      return res.status(404).json({ error: "Employee not found" });
     }
 
-    employeer.employess.pull(employer_id);
+    employeer.employess.pull(employee_id);
 
     await employeer.save();
     res.status(200).json({ message: " employee deleted successfully" });
@@ -147,10 +163,12 @@ export const deleteEmployee = async (req, res) => {
 //Read all created employees by ID
 export const getUserWithEmployees = async (req, res) => {
   const { id } = req.params;
-  console.log("hii running");
   try {
     // Find the user by ID and populate the employees field
-    const user = await User.findById(id).populate("employess");
+    const user = await User.findById(id).populate({
+      path: "employess",
+      options: { sort: { createdAt: -1 } },
+    });
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }

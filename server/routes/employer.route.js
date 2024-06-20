@@ -11,6 +11,6 @@ const router = express.Router();
 router.get("/get-employess/:id", getUserWithEmployees);
 router.post("/create-employee", createEmployee);
 router.post("/update-employee/:id", updateEmployee);
-router.post("/delete-employee", deleteEmployee);
+router.delete("/delete-employee", deleteEmployee);
 
 export default router;

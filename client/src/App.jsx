@@ -1,35 +1,41 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useContext, useState } from "react";
+import Login from "./pages/Login";
+import { Navigate, Route, Routes, useLocation } from "react-router";
+import Navbar from "./components/Navbar";
+import Signup from "./pages/Signup";
+import { Toaster } from "react-hot-toast";
+import { AuthProvider } from "../context/AuthContext";
+import Dashboard from "./pages/Home";
+import EmployeeList from "./pages/EmployeeList";
 
 function App() {
-  const [count, setCount] = useState(0)
-
+  const { Auth, isAuth } = useContext(AuthProvider);
+  const location = useLocation();
+  const showNavbar = !["/login", "/sign-up"].includes(location.pathname);
+  console.log(Auth);
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <main className="h-full w-full">
+      {showNavbar && <Navbar />}
+      <Routes>
+        <Route
+          path="/login"
+          element={Auth ? <Navigate to={"/"} /> : <Login />}
+        />
+        <Route
+          path="/sign-up"
+          element={isAuth ? <Navigate to={"/"} /> : <Signup />}
+        />
+        <Route
+          path="/"
+          element={
+            Auth ? <Dashboard user={Auth} /> : <Navigate to={"/login"} />
+          }
+        />
+        <Route path="/employee-list" element={<EmployeeList user={Auth} />} />
+      </Routes>
+      <Toaster />
+    </main>
+  );
 }
 
-export default App
+export default App;

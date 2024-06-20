@@ -5,13 +5,15 @@ import employerRoutes from "./routes/employer.route.js";
 import connectToDb from "./database/connectToDb.js";
 import cookieParser from "cookie-parser";
 import cors from "cors";
+import bodyParser from "body-parser";
 
 dotenv.config();
 
 const app = express();
+app.use(cors());
+app.use(bodyParser.json({ limit: "10mb" }));
 app.use(cookieParser());
 app.use(express.json());
-app.use(cors());
 
 app.listen(5000, async () => {
   await connectToDb();
