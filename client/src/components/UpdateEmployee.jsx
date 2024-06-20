@@ -100,7 +100,7 @@ const UpdateEmployee = ({ offUpdate, user, item, add }) => {
         {/* mobileNumber Number */}
         <div className="mb-4">
           <label className="block text-gray-700 mb-2" htmlFor="mobileNumber">
-            mobileNumber No:
+            Mobile No:
           </label>
           <input
             className="w-full px-3 py-1 border rounded"
