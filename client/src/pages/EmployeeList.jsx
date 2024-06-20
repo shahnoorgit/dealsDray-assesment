@@ -45,7 +45,7 @@ const EmployeeList = ({ user }) => {
     setdeleting(true);
     try {
       const res = await fetch(
-        "https://dealsdray-assesment.onrender.com/localhost:5000/api/delete-employee/",
+        "https://dealsdray-assesment.onrender.com/api/delete-employee/",
         {
           method: "DELETE",
           headers: {
@@ -194,24 +194,28 @@ const EmployeeList = ({ user }) => {
 
       <center className=" mt-12">
         {loading && <div>Loading...</div>}
-        {list.length == 0 ? (
-          <div className=" flex flex-col gap-2 mt-28">
-            <span className=" text-2xl text-gray-900 font-medium">
-              {!loading &&
-                "You have not added any employees yet please please add employess."}
-            </span>
-            <span className=" text-xl text-gray-900 font-normal">
-              {!loading &&
-                "please click on create new employee button at top menu."}
-            </span>
+        {!loading && (
+          <div>
+            {list.length == 0 ? (
+              <div className=" flex flex-col gap-2 mt-28">
+                <span className=" text-2xl text-gray-900 font-medium">
+                  {!loading &&
+                    "You have not added any employees yet please please add employess."}
+                </span>
+                <span className=" text-xl text-gray-900 font-normal">
+                  {!loading &&
+                    "please click on create new employee button at top menu."}
+                </span>
+              </div>
+            ) : (
+              <TableComponent
+                handleDelete={handleDelete}
+                handleEdit={handleEdit}
+                data={searchlist}
+                loading={deleting}
+              />
+            )}
           </div>
-        ) : (
-          <TableComponent
-            handleDelete={handleDelete}
-            handleEdit={handleEdit}
-            data={searchlist}
-            loading={deleting}
-          />
         )}
       </center>
     </main>

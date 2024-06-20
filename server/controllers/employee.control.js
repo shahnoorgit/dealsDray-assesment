@@ -115,7 +115,6 @@ export const updateEmployee = async (req, res) => {
         mobileNumber,
         course,
         designation: designation.toLowerCase(),
-        updatedAt: Date.now(),
       },
       {
         new: true,
